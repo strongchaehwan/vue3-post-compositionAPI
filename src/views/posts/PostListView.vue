@@ -12,11 +12,17 @@
         ></PostItem>
       </div>
     </div>
+    <hr class="my-4" />
+    <AppCard>
+      <PostDetailView :id="2"></PostDetailView>
+    </AppCard>
   </div>
 </template>
 
 <script setup>
 import PostItem from "@/components/posts/PostItem.vue";
+import PostDetailView from "./PostDetailView.vue";
+import AppCard from "@/components/AppCard.vue";
 import { getPost } from "@/api/posts";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
@@ -24,13 +30,29 @@ import { useRouter } from "vue-router";
 const posts = ref([]);
 const router = useRouter();
 
-const fetchPosts = () => {
-  posts.value = getPost();
+const fetchPosts = async () => {
+  try {
+    const response = await getPost();
+    posts.value = response.data;
+  } catch (error) {
+    console.error(error);
+  }
 };
+
 fetchPosts();
 
-const goPage = id => {
-  router.push(`/posts/${id}`);
+// eslint-disable-next-line prettier/prettier
+const goPage = (id) => {
+  //router.push(`/posts/${id}`);
+  router.push({
+    name: "PostDetail",
+    params: {
+      id,
+    },
+    // query: {
+    //   name: "임채환",
+    // },
+  });
 };
 </script>
 
