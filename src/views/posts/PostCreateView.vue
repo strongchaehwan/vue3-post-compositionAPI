@@ -2,6 +2,8 @@
   <div>
     <h2>게시글 등록</h2>
     <hr class="my-4" />
+
+    <!-- 부모 자식간 양방향 데이터 바인딩을 하려면 이렇게해야함 -->
     <PostForm
       v-model:title="form.title"
       v-model:content="form.content"
@@ -37,7 +39,7 @@ const save = () => {
   try {
     const data = {
       ...form.value,
-      createdAt: Date.now(),
+      createdAt: new Date().toLocaleDateString(),
     };
     createPost(data);
     router.push({ name: "PostList" });

@@ -2,6 +2,7 @@
   <form @submit.prevent>
     <div class="row g-3">
       <div class="col">
+        <!-- 부모 자식간 양방향 데이터 바인딩을 하려면 이렇게해야함 -->
         <input
           :value="title"
           @input="$emit('update:title', $event.target.value)"

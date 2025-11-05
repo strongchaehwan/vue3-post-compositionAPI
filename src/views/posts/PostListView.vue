@@ -3,6 +3,8 @@
     <h2>게시글 목록</h2>
     <hr class="my-4" />
 
+    <!-- 부모 자식간 양방향 데이터 바인딩을 하려면 이렇게해야함 -->
+    <!-- v-model을 여러개 사용할떄는 "update:속성명" 형태의 이벤트를 "defindEmits"로 정의해야 부모와 데이터 연동 가능? -->
     <PostFilter
       v-model:title="params.title_like"
       v-model:limit="params._limit"
@@ -10,7 +12,7 @@
 
     <hr class="my-4" />
 
-    <AppGrid :items="posts">
+    <!-- <AppGrid :items="posts">
       <template v-slot="{ item }">
         <PostItem
           :title="item.title"
@@ -19,13 +21,33 @@
           @click="goPage(item.id)"
         ></PostItem>
       </template>
-    </AppGrid>
+    </AppGrid> -->
+    <div class="row g-3">
+      <div v-for="post in posts" :key="post.id" class="col-4">
+        <PostItem
+          :title="post.title"
+          :content="post.content"
+          :created-at="post.createdAt"
+          @click="goPage(post.id)"
+          @modal="openModal(post)"
+        />
+      </div>
+    </div>
 
     <AppPagination
-      :current-page="params._page"
-      :page-count="pageCount"
+      :currentPage="params._page"
+      :pageCount="pageCount"
       @page="(page) => (params._page = page)"
     />
+
+    <Teleport to="#modal">
+      <PostModal
+        v-model="show"
+        :title="modalTitle"
+        :content="modalContent"
+        :created-at="modalCreatedAt"
+      />
+    </Teleport>
 
     <template v-if="posts && posts.length > 0">
       <hr class="my-5" />
@@ -37,8 +59,8 @@
 </template>
 
 <script setup>
+import PostModal from "@/components/posts/PostModal.vue";
 import PostFilter from "@/components/posts/PostFilter.vue";
-import AppGrid from "@/components/AppGrid.vue";
 import PostItem from "@/components/posts/PostItem.vue";
 import AppPagination from "@/components/AppPagination.vue";
 import PostDetailView from "./PostDetailView.vue";
@@ -96,6 +118,18 @@ const goPage = (id) => {
     //   name: "임채환",
     // },
   });
+};
+
+// modal
+const show = ref(false);
+const modalTitle = ref("");
+const modalContent = ref("");
+const modalCreatedAt = ref("");
+const openModal = ({ title, content, createdAt }) => {
+  show.value = true;
+  modalTitle.value = title;
+  modalContent.value = content;
+  modalCreatedAt.value = createdAt;
 };
 </script>
 

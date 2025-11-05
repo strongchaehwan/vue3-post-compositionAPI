@@ -46,10 +46,15 @@ const router = useRouter();
 
 const post = ref({});
 
+//데이터 한건불러오기 API
 const fetchPost = async () => {
-  const response = await getPostById(props.id);
-  // post.value = { ...response.data };
-  setPost(response.data);
+  try {
+    const response = await getPostById(props.id);
+    // post.value = { ...response.data };
+    setPost(response.data);
+  } catch (error) {
+    console.error(error);
+  }
 };
 const setPost = ({ title, content, createdAt }) => {
   post.value.title = title;
